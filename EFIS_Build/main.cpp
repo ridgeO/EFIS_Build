@@ -175,6 +175,8 @@ int main (void)
     float chevron_rightbound = center_x + .5 * chevron_width;
     float chevron_topbound = horizon_origin;
     float chevron_bottombound = horizon_origin - chevron_height;
+    float chevron_bottom_width = chevron_width * .25;
+    float chevron_mid_thickness = chevron_height * .25;
     float dg_radius = screen_height_f * .21;
     float dg_center_x = center_x;
     float dg_center_y = bottom_bound + bounding_box_height + dg_radius;
@@ -354,9 +356,31 @@ int main (void)
     };
 
     //------------------------------
-    // ALTITUDE BOXES
+    // CHEVRON
     //------------------------------
     
+    GLfloat Chevron[] =
+    {
+        chevron_leftbound,chevron_bottombound,0,
+        chevron_leftbound + chevron_bottom_width,chevron_bottombound,0,
+        center_x,chevron_topbound,0,
+        center_x,chevron_topbound - chevron_mid_thickness,0,
+        chevron_rightbound - chevron_bottom_width,chevron_bottombound,0,
+        chevron_rightbound,chevron_bottombound,0,
+        center_x,chevron_topbound,0
+    };
+    
+    // Set points for Chevron_left_box
+    GLfloat Chevron_left_box[] =
+    {
+        
+    };
+    
+    // Set points for Chevron_right_box
+    GLfloat Chevron_right_box[] =
+    {
+        
+    };
     
     // Set viewport and such
     glViewport(0.0f, 0.0f, screen_width_f, screen_height_f);
@@ -475,14 +499,14 @@ int main (void)
         glVertexPointer(3, GL_FLOAT, 0, Airspeed_tas_box);
         glDrawArrays(GL_QUADS, 0, 4);
         glDisableClientState(GL_VERTEX_ARRAY);
-        /*
+        
         // Draw Chevron
         glEnableClientState(GL_VERTEX_ARRAY);
         glColor3ub(CHEVRON_COLOR);
         glVertexPointer(3, GL_FLOAT, 0, Chevron);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 7);
         glDisableClientState(GL_VERTEX_ARRAY);
-        
+        /*
         // Draw Chevron Left Box
         glEnableClientState(GL_VERTEX_ARRAY);
         glColor3ub(CHEVRON_COLOR);
