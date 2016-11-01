@@ -101,7 +101,289 @@ void DrawArc(float cx, float cy, float r, float start_angle, float arc_angle, in
  }
  */
 
+//-------------------------------------
+// Set commonly used heights and widths
+//-------------------------------------
+float top_bound = SCREEN_HEIGHT;
+float bottom_bound = 0;
+float left_bound = 0;
+float right_bound = SCREEN_WIDTH;
+float center_x = SCREEN_WIDTH/2;
+float center_y = SCREEN_HEIGHT/2;
+float screen_width_f = SCREEN_WIDTH;
+float screen_height_f = SCREEN_HEIGHT;
+float horizon_origin = SCREEN_HEIGHT * .625;
+float horizon_block_width = screen_width_f * 2;
+float horizon_block_height = screen_height_f * 4;
+float horizon_block_leftbound = left_bound - .25 * horizon_block_width;
+float horizon_block_rightbound = right_bound + .5 * horizon_block_width;
+float horizon_line_thickness = SCREEN_HEIGHT * .0025;
+float bounding_box_height = screen_height_f * .05;
+float main_box_width = screen_width_f * .08;
+float main_box_height = screen_height_f * .45;
+float secondary_box_height = main_box_height * .8;
+float secondary_box_width = main_box_width * .4;
+float highlight_box_height = screen_height_f * .04;
+float ars_box_leftbound = center_x - float(3.75 * main_box_width);
+float ars_box_rightbound = ars_box_leftbound + main_box_width;
+float ars_box_topbound = float(horizon_origin + .5 * main_box_height);
+float ars_box_bottombound = float(horizon_origin - .5 * main_box_height);
+float alt_box_leftbound = center_x + float(2.75 * main_box_width);
+float alt_box_rightbound = alt_box_leftbound + main_box_width;
+float alt_box_topbound = float(horizon_origin + .5 * main_box_height);
+float alt_box_bottombound = float(horizon_origin - .5 * main_box_height);
+float chevron_width = screen_width_f * .2;
+float chevron_height = screen_height_f * .04;
+float chevron_leftbound = center_x - .5 * chevron_width;
+float chevron_rightbound = center_x + .5 * chevron_width;
+float chevron_topbound = horizon_origin;
+float chevron_bottombound = horizon_origin - chevron_height;
+float chevron_bottom_width = chevron_width * .25;
+float chevron_mid_thickness = chevron_height * .2;
+float dg_radius = screen_height_f * .21;
+float dg_center_x = center_x;
+float dg_center_y = bottom_bound + bounding_box_height + dg_radius;
+float current_heading_box_bottombound = dg_center_y + dg_radius;
+float current_heading_box_topbound = current_heading_box_bottombound + highlight_box_height;
+float current_heading_box_leftbound = center_x - dg_radius / 4;
+float current_heading_box_rightbound = center_x + dg_radius / 4;
+float current_heading_triangle_leftbound = center_x - dg_radius / 16;
+float current_heading_triangle_rightbound = center_x + dg_radius / 16;
+float current_heading_triangle_bottombound = current_heading_box_bottombound - sqrtf((dg_radius/8)*(dg_radius/8)-(dg_radius/16)*(dg_radius/16));
+
+//-----------------------------------
+// DEFINE COLORS
+//-----------------------------------
+#define WHITE 255,255,255
+#define BLACK 0,0,0
+#define HORIZON_BLOCK_TOP_COLOR 51,153,255
+#define HORIZON_BLOCK_BOTTOM_COLOR 139,69,19
+#define HORIZON_LINE_COLOR 224,224,224
+#define TOP_BOX_COLOR 32,32,32
+#define BOTTOM_BOX_COLOR 32,32,32
+#define CHEVRON_COLOR 255,215,0
+#define BOX_COLOR 205,205,205
+#define HIGHLIGHT_BOX_COLOR 32,32,32
+#define DG_COLOR 65,65,65
+
+//-----------------------------------
+// HORIZON BLOCKS
+//-----------------------------------
+
+// Set points for Horizon_block_bottom
+GLfloat Horizon_block_bottom[] =
+{
+    horizon_block_leftbound,horizon_origin,0,
+    horizon_block_rightbound,horizon_origin,0,
+    horizon_block_rightbound,horizon_origin - horizon_block_height,0,
+    horizon_block_leftbound,horizon_origin - horizon_block_height,0
+};
+
+// Set points for Horizon_block_top
+GLfloat Horizon_block_top[] =
+{
+    horizon_block_leftbound,horizon_origin + horizon_block_height,0,
+    horizon_block_rightbound,horizon_origin + horizon_block_height,0,
+    horizon_block_rightbound,horizon_origin,0,
+    horizon_block_leftbound,horizon_origin,0
+};
+
+// Set points for Horizon_block_line
+GLfloat Horizon_block_line[] =
+{
+    horizon_block_leftbound,horizon_origin + horizon_line_thickness / 2,0,
+    horizon_block_rightbound,horizon_origin + horizon_line_thickness / 2,0,
+    horizon_block_rightbound,horizon_origin - horizon_line_thickness / 2,0,
+    horizon_block_leftbound,horizon_origin - horizon_line_thickness / 2,0
+};
+
+//-------------------------------------
+// BOUNDING BOXES FOR FREQS & KEYS
+//-------------------------------------
+
+// Set points for Top_box_1
+GLfloat Top_box_1[] =
+{
+    0,screen_height_f,0,
+    screen_width_f,screen_height_f,0,
+    screen_width_f,screen_height_f - bounding_box_height,0,
+    0,screen_height_f - bounding_box_height,0
+};
+
+// Set points for Top_box_2
+GLfloat Top_box_2[] =
+{
+    0,screen_height_f,0,
+    screen_width_f,screen_height_f,0,
+    screen_width_f,screen_height_f - 2 * bounding_box_height,0,
+    0,screen_height_f - 2 * bounding_box_height,0
+};
+
+// Set point for Bottom_box
+GLfloat Bottom_box[] =
+{
+    0,bounding_box_height,0,
+    screen_width_f,bounding_box_height,0,
+    screen_width_f,0,0,
+    0,0,0
+};
+
+//------------------------------
+// ALTITUDE BOXES
+//------------------------------
+
+
+// Set points for Altitude_box
+GLfloat Altitude_box[] =
+{
+    alt_box_leftbound,alt_box_topbound,0,
+    alt_box_rightbound,alt_box_topbound,0,
+    alt_box_rightbound,alt_box_bottombound,0,
+    alt_box_leftbound,alt_box_bottombound,0
+};
+
+// Set points for Altitude_select_box
+GLfloat Altitude_select_box[] =
+{
+    alt_box_leftbound,alt_box_topbound + highlight_box_height,0,
+    alt_box_rightbound,alt_box_topbound + highlight_box_height,0,
+    alt_box_rightbound,alt_box_topbound,0,
+    alt_box_leftbound,alt_box_topbound,0
+};
+
+// Set points for Altitude_current_box
+GLfloat Altitude_current_box[] =
+{
+    alt_box_leftbound,float(horizon_origin + .5 * highlight_box_height),0,
+    alt_box_rightbound,float(horizon_origin + .5 * highlight_box_height),0,
+    alt_box_rightbound,float(horizon_origin - .5 * highlight_box_height),0,
+    alt_box_leftbound,float(horizon_origin - .5 * highlight_box_height),0
+};
+
+// Set points for Altitude_set_box
+GLfloat Altitude_set_box[] =
+{
+    alt_box_leftbound,alt_box_bottombound,0,
+    alt_box_rightbound,alt_box_bottombound,0,
+    alt_box_rightbound,alt_box_bottombound - highlight_box_height,0,
+    alt_box_leftbound,alt_box_bottombound - highlight_box_height,0
+};
+
+// Set points for Vertical_speed_box
+GLfloat Vertical_speed_box[] =
+{
+    alt_box_rightbound,float(horizon_origin + .5 * secondary_box_height),0,
+    alt_box_rightbound + secondary_box_width,float(horizon_origin + .5 * secondary_box_height),0,
+    alt_box_rightbound + secondary_box_width,float(horizon_origin - .5 * secondary_box_height),0,
+    alt_box_rightbound,float(horizon_origin - .5 * secondary_box_height),0
+};
+
+//------------------------------
+// AIRSPEED BOXES
+//------------------------------
+
+// Set points for Airspeed_box
+GLfloat Airspeed_box[] =
+{
+    ars_box_leftbound,ars_box_topbound,0,
+    ars_box_rightbound,ars_box_topbound,0,
+    ars_box_rightbound,ars_box_bottombound,0,
+    ars_box_leftbound,ars_box_bottombound,0
+};
+
+// Set points for Oat_box
+GLfloat Oat_box[] =
+{
+    ars_box_leftbound,ars_box_topbound + highlight_box_height,0,
+    ars_box_rightbound,ars_box_topbound + highlight_box_height,0,
+    ars_box_rightbound,ars_box_topbound,0,
+    ars_box_leftbound,ars_box_topbound,0
+};
+
+// Set points for Airspeed_current_box
+GLfloat Airspeed_current_box[] =
+{
+    ars_box_leftbound,float(horizon_origin + .5 * highlight_box_height),0,
+    ars_box_rightbound,float(horizon_origin + .5 * highlight_box_height),0,
+    ars_box_rightbound,float(horizon_origin - .5 * highlight_box_height),0,
+    ars_box_leftbound,float(horizon_origin - .5 * highlight_box_height),0
+};
+
+// Set points for Airspeed_tas_box
+GLfloat Airspeed_tas_box[] =
+{
+    ars_box_leftbound,ars_box_bottombound,0,
+    ars_box_rightbound,ars_box_bottombound,0,
+    ars_box_rightbound,ars_box_bottombound - highlight_box_height,0,
+    ars_box_leftbound,ars_box_bottombound - highlight_box_height,0
+};
+
+//------------------------------
+// CHEVRON
+//------------------------------
+
+GLfloat Chevron[] =
+{
+    chevron_leftbound,chevron_bottombound,0,
+    chevron_leftbound + chevron_bottom_width,chevron_bottombound,0,
+    center_x,chevron_topbound,0,
+    center_x,chevron_topbound - chevron_mid_thickness,0,
+    chevron_rightbound - chevron_bottom_width,chevron_bottombound,0,
+    chevron_rightbound,chevron_bottombound,0,
+    center_x,chevron_topbound,0
+};
+
+// Set points for Chevron_left_box
+GLfloat Chevron_left_box[] =
+{
+    float(chevron_leftbound - .5 * chevron_width),chevron_topbound,0,
+    float(chevron_leftbound - .25 * chevron_width),chevron_topbound,0,
+    float(chevron_leftbound - .25 * chevron_width),float(chevron_topbound - chevron_height * .25),0,
+    float(chevron_leftbound - .5 * chevron_width),float(chevron_topbound - chevron_height * .25),0
+};
+
+// Set points for Chevron_right_box
+GLfloat Chevron_right_box[] =
+{
+    float(chevron_rightbound + .5 * chevron_width),chevron_topbound,0,
+    float(chevron_rightbound + .25 * chevron_width),chevron_topbound,0,
+    float(chevron_rightbound + .25 * chevron_width),float(chevron_topbound - chevron_height * .25),0,
+    float(chevron_rightbound + .5 * chevron_width),float(chevron_topbound - chevron_height * .25),0
+};
+
+//------------------------------
+// HEADING INDICATOR
+//------------------------------
+
+// Set points for Current_heading_box
+GLfloat Current_heading_box[] =
+{
+    current_heading_box_leftbound,current_heading_box_topbound,0,
+    current_heading_box_rightbound,current_heading_box_topbound,0,
+    current_heading_box_rightbound,current_heading_box_bottombound,0,
+    current_heading_box_leftbound,current_heading_box_bottombound,0
+};
+
+// Set points for Current_heading_triangle
+GLfloat Current_heading_triangle[] =
+{
+    current_heading_triangle_leftbound,current_heading_box_bottombound,0,
+    current_heading_triangle_rightbound,current_heading_box_bottombound,0,
+    center_x,current_heading_triangle_bottombound,0
+};
+
+//-------------------------------
+// Define Movement Variables
+//-------------------------------
+
+float horizon_blocks_y = 0;
+float horizon_blocks_rot = 0;
+float dg_rot = 0;
+float turn_coordinator_rot = 0;
+
+//-------------------------------
 // Begin main function
+//-------------------------------
 int main (void)
 {
     // Initialize GLFW
@@ -139,275 +421,6 @@ int main (void)
     // Get display dimensions
     // int screen_width, screen_height;
     // glfwGetFramebufferSize(window, &screen_width, &screen_height);
-    
-    // Set commonly used heights and widths
-    float top_bound = SCREEN_HEIGHT;
-    float bottom_bound = 0;
-    float left_bound = 0;
-    float right_bound = SCREEN_WIDTH;
-    float center_x = SCREEN_WIDTH/2;
-    float center_y = SCREEN_HEIGHT/2;
-    float screen_width_f = SCREEN_WIDTH;
-    float screen_height_f = SCREEN_HEIGHT;
-    float horizon_origin = SCREEN_HEIGHT * .625;
-    float horizon_block_width = screen_width_f * 2;
-    float horizon_block_height = screen_height_f * 4;
-    float horizon_block_leftbound = left_bound - .25 * horizon_block_width;
-    float horizon_block_rightbound = right_bound + .5 * horizon_block_width;
-    float horizon_line_thickness = SCREEN_HEIGHT * .0025;
-    float bounding_box_height = screen_height_f * .05;
-    float main_box_width = screen_width_f * .08;
-    float main_box_height = screen_height_f * .45;
-    float secondary_box_height = main_box_height * .8;
-    float secondary_box_width = main_box_width * .4;
-    float highlight_box_height = screen_height_f * .04;
-    float ars_box_leftbound = center_x - float(3.75 * main_box_width);
-    float ars_box_rightbound = ars_box_leftbound + main_box_width;
-    float ars_box_topbound = float(horizon_origin + .5 * main_box_height);
-    float ars_box_bottombound = float(horizon_origin - .5 * main_box_height);
-    float alt_box_leftbound = center_x + float(2.75 * main_box_width);
-    float alt_box_rightbound = alt_box_leftbound + main_box_width;
-    float alt_box_topbound = float(horizon_origin + .5 * main_box_height);
-    float alt_box_bottombound = float(horizon_origin - .5 * main_box_height);
-    float chevron_width = screen_width_f * .2;
-    float chevron_height = screen_height_f * .04;
-    float chevron_leftbound = center_x - .5 * chevron_width;
-    float chevron_rightbound = center_x + .5 * chevron_width;
-    float chevron_topbound = horizon_origin;
-    float chevron_bottombound = horizon_origin - chevron_height;
-    float chevron_bottom_width = chevron_width * .25;
-    float chevron_mid_thickness = chevron_height * .2;
-    float dg_radius = screen_height_f * .21;
-    float dg_center_x = center_x;
-    float dg_center_y = bottom_bound + bounding_box_height + dg_radius;
-    float current_heading_box_bottombound = dg_center_y + dg_radius;
-    float current_heading_box_topbound = current_heading_box_bottombound + highlight_box_height;
-    float current_heading_box_leftbound = center_x - dg_radius / 4;
-    float current_heading_box_rightbound = center_x + dg_radius / 4;
-    float current_heading_triangle_leftbound = center_x - dg_radius / 16;
-    float current_heading_triangle_rightbound = center_x + dg_radius / 16;
-    float current_heading_triangle_bottombound = current_heading_box_bottombound - sqrtf((dg_radius/8)*(dg_radius/8)-(dg_radius/16)*(dg_radius/16));
-    
-    //-----------------------------------
-    // DEFINE COLORS
-    //-----------------------------------
-    #define WHITE 255,255,255
-    #define BLACK 0,0,0
-    #define HORIZON_BLOCK_TOP_COLOR 51,153,255
-    #define HORIZON_BLOCK_BOTTOM_COLOR 139,69,19
-    #define HORIZON_LINE_COLOR 224,224,224
-    #define TOP_BOX_COLOR 32,32,32
-    #define BOTTOM_BOX_COLOR 32,32,32
-    #define CHEVRON_COLOR 255,215,0
-    #define BOX_COLOR 205,205,205
-    #define HIGHLIGHT_BOX_COLOR 32,32,32
-    #define DG_COLOR 65,65,65
-        
-    //-----------------------------------
-    // HORIZON BLOCKS
-    //-----------------------------------
-    
-    // Set points for Horizon_block_bottom
-    GLfloat Horizon_block_bottom[] =
-    {
-        horizon_block_leftbound,horizon_origin,0,
-        horizon_block_rightbound,horizon_origin,0,
-        horizon_block_rightbound,horizon_origin - horizon_block_height,0,
-        horizon_block_leftbound,horizon_origin - horizon_block_height,0
-    };
-    
-    // Set points for Horizon_block_top
-    GLfloat Horizon_block_top[] =
-    {
-        horizon_block_leftbound,horizon_origin + horizon_block_height,0,
-        horizon_block_rightbound,horizon_origin + horizon_block_height,0,
-        horizon_block_rightbound,horizon_origin,0,
-        horizon_block_leftbound,horizon_origin,0
-    };
-    
-    // Set points for Horizon_block_line
-    GLfloat Horizon_block_line[] =
-    {
-        horizon_block_leftbound,horizon_origin + horizon_line_thickness / 2,0,
-        horizon_block_rightbound,horizon_origin + horizon_line_thickness / 2,0,
-        horizon_block_rightbound,horizon_origin - horizon_line_thickness / 2,0,
-        horizon_block_leftbound,horizon_origin - horizon_line_thickness / 2,0
-    };
-    
-    //-------------------------------------
-    // BOUNDING BOXES FOR FREQS & KEYS
-    //-------------------------------------
-    
-    // Set points for Top_box_1
-    GLfloat Top_box_1[] =
-    {
-        0,screen_height_f,0,
-        screen_width_f,screen_height_f,0,
-        screen_width_f,screen_height_f - bounding_box_height,0,
-        0,screen_height_f - bounding_box_height,0
-    };
-    
-    // Set points for Top_box_2
-    GLfloat Top_box_2[] =
-    {
-        0,screen_height_f,0,
-        screen_width_f,screen_height_f,0,
-        screen_width_f,screen_height_f - 2 * bounding_box_height,0,
-        0,screen_height_f - 2 * bounding_box_height,0
-    };
-    
-    // Set point for Bottom_box
-    GLfloat Bottom_box[] =
-    {
-        0,bounding_box_height,0,
-        screen_width_f,bounding_box_height,0,
-        screen_width_f,0,0,
-        0,0,0
-    };
-    
-    //------------------------------
-    // ALTITUDE BOXES
-    //------------------------------
-    
-    
-    // Set points for Altitude_box
-    GLfloat Altitude_box[] =
-    {
-        alt_box_leftbound,alt_box_topbound,0,
-        alt_box_rightbound,alt_box_topbound,0,
-        alt_box_rightbound,alt_box_bottombound,0,
-        alt_box_leftbound,alt_box_bottombound,0
-    };
-    
-    // Set points for Altitude_select_box
-    GLfloat Altitude_select_box[] =
-    {
-        alt_box_leftbound,alt_box_topbound + highlight_box_height,0,
-        alt_box_rightbound,alt_box_topbound + highlight_box_height,0,
-        alt_box_rightbound,alt_box_topbound,0,
-        alt_box_leftbound,alt_box_topbound,0
-    };
-    
-    // Set points for Altitude_current_box
-    GLfloat Altitude_current_box[] =
-    {
-        alt_box_leftbound,float(horizon_origin + .5 * highlight_box_height),0,
-        alt_box_rightbound,float(horizon_origin + .5 * highlight_box_height),0,
-        alt_box_rightbound,float(horizon_origin - .5 * highlight_box_height),0,
-        alt_box_leftbound,float(horizon_origin - .5 * highlight_box_height),0
-    };
-    
-    // Set points for Altitude_set_box
-    GLfloat Altitude_set_box[] =
-    {
-        alt_box_leftbound,alt_box_bottombound,0,
-        alt_box_rightbound,alt_box_bottombound,0,
-        alt_box_rightbound,alt_box_bottombound - highlight_box_height,0,
-        alt_box_leftbound,alt_box_bottombound - highlight_box_height,0
-    };
-    
-    // Set points for Vertical_speed_box
-    GLfloat Vertical_speed_box[] =
-    {
-        alt_box_rightbound,float(horizon_origin + .5 * secondary_box_height),0,
-        alt_box_rightbound + secondary_box_width,float(horizon_origin + .5 * secondary_box_height),0,
-        alt_box_rightbound + secondary_box_width,float(horizon_origin - .5 * secondary_box_height),0,
-        alt_box_rightbound,float(horizon_origin - .5 * secondary_box_height),0
-    };
-    
-    //------------------------------
-    // AIRSPEED BOXES
-    //------------------------------
-
-    // Set points for Airspeed_box
-    GLfloat Airspeed_box[] =
-    {
-        ars_box_leftbound,ars_box_topbound,0,
-        ars_box_rightbound,ars_box_topbound,0,
-        ars_box_rightbound,ars_box_bottombound,0,
-        ars_box_leftbound,ars_box_bottombound,0
-    };
-    
-    // Set points for Oat_box
-    GLfloat Oat_box[] =
-    {
-        ars_box_leftbound,ars_box_topbound + highlight_box_height,0,
-        ars_box_rightbound,ars_box_topbound + highlight_box_height,0,
-        ars_box_rightbound,ars_box_topbound,0,
-        ars_box_leftbound,ars_box_topbound,0
-    };
-    
-    // Set points for Airspeed_current_box
-    GLfloat Airspeed_current_box[] =
-    {
-        ars_box_leftbound,float(horizon_origin + .5 * highlight_box_height),0,
-        ars_box_rightbound,float(horizon_origin + .5 * highlight_box_height),0,
-        ars_box_rightbound,float(horizon_origin - .5 * highlight_box_height),0,
-        ars_box_leftbound,float(horizon_origin - .5 * highlight_box_height),0
-    };
-    
-    // Set points for Airspeed_tas_box
-    GLfloat Airspeed_tas_box[] =
-    {
-        ars_box_leftbound,ars_box_bottombound,0,
-        ars_box_rightbound,ars_box_bottombound,0,
-        ars_box_rightbound,ars_box_bottombound - highlight_box_height,0,
-        ars_box_leftbound,ars_box_bottombound - highlight_box_height,0
-    };
-
-    //------------------------------
-    // CHEVRON
-    //------------------------------
-    
-    GLfloat Chevron[] =
-    {
-        chevron_leftbound,chevron_bottombound,0,
-        chevron_leftbound + chevron_bottom_width,chevron_bottombound,0,
-        center_x,chevron_topbound,0,
-        center_x,chevron_topbound - chevron_mid_thickness,0,
-        chevron_rightbound - chevron_bottom_width,chevron_bottombound,0,
-        chevron_rightbound,chevron_bottombound,0,
-        center_x,chevron_topbound,0
-    };
-    
-    // Set points for Chevron_left_box
-    GLfloat Chevron_left_box[] =
-    {
-        float(chevron_leftbound - .5 * chevron_width),chevron_topbound,0,
-        float(chevron_leftbound - .25 * chevron_width),chevron_topbound,0,
-        float(chevron_leftbound - .25 * chevron_width),float(chevron_topbound - chevron_height * .25),0,
-        float(chevron_leftbound - .5 * chevron_width),float(chevron_topbound - chevron_height * .25),0
-    };
-    
-    // Set points for Chevron_right_box
-    GLfloat Chevron_right_box[] =
-    {
-        float(chevron_rightbound + .5 * chevron_width),chevron_topbound,0,
-        float(chevron_rightbound + .25 * chevron_width),chevron_topbound,0,
-        float(chevron_rightbound + .25 * chevron_width),float(chevron_topbound - chevron_height * .25),0,
-        float(chevron_rightbound + .5 * chevron_width),float(chevron_topbound - chevron_height * .25),0
-    };
-    
-    //------------------------------
-    // HEADING INDICATOR
-    //------------------------------
-    
-    // Set points for Current_heading_box
-    GLfloat Current_heading_box[] =
-    {
-        current_heading_box_leftbound,current_heading_box_topbound,0,
-        current_heading_box_rightbound,current_heading_box_topbound,0,
-        current_heading_box_rightbound,current_heading_box_bottombound,0,
-        current_heading_box_leftbound,current_heading_box_bottombound,0
-    };
-    
-    // Set points for Current_heading_triangle
-    GLfloat Current_heading_triangle[] =
-    {
-        current_heading_triangle_leftbound,current_heading_box_bottombound,0,
-        current_heading_triangle_rightbound,current_heading_box_bottombound,0,
-        center_x,current_heading_triangle_bottombound,0
-    };
 
     // Set viewport and such
     glViewport(0.0f, 0.0f, screen_width_f, screen_height_f);
@@ -422,6 +435,11 @@ int main (void)
         glClear(GL_COLOR_BUFFER_BIT);
         
         // RENDER OPENGL HERE
+        
+        glPushMatrix();
+        glRotatef(horizon_blocks_rot, 0, 0, 1);
+        glTranslatef(0, horizon_blocks_y, 0);
+        
         // Draw Horizon Block Top
         glEnableClientState(GL_VERTEX_ARRAY);
         glColor3ub(HORIZON_BLOCK_TOP_COLOR);
@@ -442,6 +460,8 @@ int main (void)
         glVertexPointer(3, GL_FLOAT, 0, Horizon_block_line);
         glDrawArrays(GL_QUADS, 0, 4);
         glDisableClientState(GL_VERTEX_ARRAY);
+        
+        glPopMatrix();
         
         // Draw Top Box 1
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -549,8 +569,11 @@ int main (void)
         glDisableClientState(GL_VERTEX_ARRAY);
         
         // Draw DG
+        glPushMatrix();
+        glRotatef(dg_rot, 0, 0, 1);
         glColor3ub(DG_COLOR);
         drawFilledCircle(dg_center_x, dg_center_y, dg_radius);
+        glPopMatrix();
         
         // Draw Current Heading Box
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -567,8 +590,11 @@ int main (void)
         glDisableClientState(GL_VERTEX_ARRAY);
         
         // Draw Turn Coordinator Arc
+        glPushMatrix();
+        glRotatef(turn_coordinator_rot, 0, 0, 1);
         glColor3ub(WHITE);
         DrawArc(center_x, horizon_origin, float(main_box_height / 2 + highlight_box_height), PI / 6, 2 * PI / 3, 40);
+        glPopMatrix();
         
         // Swap Front and Back Buffers
         glfwSwapBuffers(window);
@@ -585,6 +611,26 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
     if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
     {
         std::cout<<"Left Arrow"<<std::endl;
+    }
+    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+    {
+        horizon_blocks_y += 2;
+    }
+    if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+    {
+        horizon_blocks_y -= 2;
+    }
+    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    {
+        horizon_blocks_rot += 1;
+        dg_rot += 1;
+        turn_coordinator_rot += 1;
+    }
+    if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    {
+        horizon_blocks_rot -= 1;
+        dg_rot -= 1;
+        turn_coordinator_rot -= 1;
     }
     std::cout<<key<<std::endl;
 }
