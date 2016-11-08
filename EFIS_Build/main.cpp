@@ -442,7 +442,7 @@ int main (void)
         // RENDER OPENGL HERE
         
         glPushMatrix();
-        glTranslatef(horizon_block_width/4,horizon_origin,0);
+        glTranslatef(horizon_block_width/4,horizon_origin+horizon_blocks_y,0);
         glRotatef(horizon_blocks_rot,0.f,0.f,1.f);
         glTranslatef(-horizon_block_width/4,-horizon_origin,0);
         
