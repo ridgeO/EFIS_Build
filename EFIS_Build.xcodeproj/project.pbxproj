@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B74BB031DCBAC3900081E7A /* libfreetype.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B74BB021DCBAC3900081E7A /* libfreetype.6.dylib */; };
 		4B82E9DB1DB9AA5400A64F3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B82E9DA1DB9AA5400A64F3C /* main.cpp */; };
 		4B82E9E21DB9AB4000A64F3C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B82E9E11DB9AB4000A64F3C /* OpenGL.framework */; };
 		4B82E9E41DB9AB5200A64F3C /* libglfw3.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B82E9E31DB9AB5200A64F3C /* libglfw3.3.2.dylib */; };
 		4B82E9E61DB9AB6200A64F3C /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B82E9E51DB9AB6200A64F3C /* libGLEW.2.0.0.dylib */; };
+		4B88C7DB1DD24A7A00388C93 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B88C7DA1DD24A7A00388C93 /* AGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +28,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4B74BB021DCBAC3900081E7A /* libfreetype.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreetype.6.dylib; path = ../../../../usr/local/Cellar/freetype/2.7/lib/libfreetype.6.dylib; sourceTree = "<group>"; };
 		4B82E9D71DB9AA5400A64F3C /* EFIS_Build */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EFIS_Build; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B82E9DA1DB9AA5400A64F3C /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		4B82E9E11DB9AB4000A64F3C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -34,6 +37,7 @@
 		4B82E9E71DB9ABE800A64F3C /* glfw_app.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = glfw_app.hpp; sourceTree = "<group>"; };
 		4B82E9E81DB9AC2200A64F3C /* glfw_window.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = glfw_window.hpp; sourceTree = "<group>"; };
 		4B82E9E91DB9ADF900A64F3C /* gl_lib.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gl_lib.hpp; sourceTree = "<group>"; };
+		4B88C7DA1DD24A7A00388C93 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = System/Library/Frameworks/AGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,14 +46,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B82E9E21DB9AB4000A64F3C /* OpenGL.framework in Frameworks */,
+				4B88C7DB1DD24A7A00388C93 /* AGL.framework in Frameworks */,
 				4B82E9E61DB9AB6200A64F3C /* libGLEW.2.0.0.dylib in Frameworks */,
 				4B82E9E41DB9AB5200A64F3C /* libglfw3.3.2.dylib in Frameworks */,
+				4B74BB031DCBAC3900081E7A /* libfreetype.6.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B74BB011DCBAC3900081E7A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4B88C7DA1DD24A7A00388C93 /* AGL.framework */,
+				4B74BB021DCBAC3900081E7A /* libfreetype.6.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		4B82E9CE1DB9AA5400A64F3C = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +73,7 @@
 				4B82E9E11DB9AB4000A64F3C /* OpenGL.framework */,
 				4B82E9D91DB9AA5400A64F3C /* EFIS_Build */,
 				4B82E9D81DB9AA5400A64F3C /* Products */,
+				4B74BB011DCBAC3900081E7A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -232,6 +248,7 @@
 					"$(inherited)",
 					/usr/local/Cellar/glfw3/3.2.1/lib,
 					/usr/local/Cellar/glew/2.0.0/lib,
+					/usr/local/Cellar/freetype/2.7/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -245,6 +262,7 @@
 					"$(inherited)",
 					/usr/local/Cellar/glfw3/3.2.1/lib,
 					/usr/local/Cellar/glew/2.0.0/lib,
+					/usr/local/Cellar/freetype/2.7/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -269,6 +287,7 @@
 				4B82E9E01DB9AA5400A64F3C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

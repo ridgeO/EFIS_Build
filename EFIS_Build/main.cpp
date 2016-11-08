@@ -12,14 +12,11 @@
 //#include <iostream>
 // Load math library for circle and roations
 #include <math.h>
-// Load GLEW for handling opnenGL functions
-//#define GLEW_STATIC
-//#include <GL/glew.h>
-// Load GLFW for handing openGL functions
-//#include <GLFW/glfw3.h>
+// Load GLM for additional math and rotations
+// Load GLFW & GLEW from custom header
 #include "glfw_app.hpp"
 // Load FreeType for text processing
-//#include <freetype2/ft2build.h>
+#include <freetype2/ft2build.h>
 
 #define PI 3.141593692
 
@@ -67,6 +64,14 @@ void DrawArc(float cx, float cy, float r, float start_angle, float arc_angle, in
     }
     glEnd();
 }
+
+// Creates an identity quaternion (no rotation)
+//glm::quat MyQuaternion;
+
+// Conversion from axis-angle
+// In GLM the angle must be in degrees here, so convert it.
+//MyQuaternion = glm::gtx::quaternion::angleAxis(degrees(90), 0);
+
 /*
  using namespace lynda;
  
@@ -115,7 +120,7 @@ float screen_height_f = SCREEN_HEIGHT;
 float horizon_origin = SCREEN_HEIGHT * .625;
 float horizon_block_width = screen_width_f * 2;
 float horizon_block_height = screen_height_f * 4;
-float horizon_block_leftbound = left_bound - .25 * horizon_block_width;
+float horizon_block_leftbound = left_bound - .5 * horizon_block_width;
 float horizon_block_rightbound = right_bound + .5 * horizon_block_width;
 float horizon_line_thickness = SCREEN_HEIGHT * .0025;
 float bounding_box_height = screen_height_f * .05;
@@ -437,8 +442,9 @@ int main (void)
         // RENDER OPENGL HERE
         
         glPushMatrix();
-        glRotatef(horizon_blocks_rot, 0, 0, 1);
-        glTranslatef(0, horizon_blocks_y, 0);
+        glTranslatef(horizon_block_width/4,horizon_origin,0);
+        glRotatef(horizon_blocks_rot,0.f,0.f,1.f);
+        glTranslatef(-horizon_block_width/4,-horizon_origin,0);
         
         // Draw Horizon Block Top
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -568,11 +574,22 @@ int main (void)
         glDrawArrays(GL_QUADS, 0, 4);
         glDisableClientState(GL_VERTEX_ARRAY);
         
+        // Draw Turn Coordinator Arc
+        glPushMatrix();
+        glTranslatef(center_x,horizon_origin,0);
+        glRotatef(turn_coordinator_rot, 0, 0, 1);
+        glTranslatef(-center_x,-horizon_origin,0);
+        glColor3ub(WHITE);
+        DrawArc(center_x, horizon_origin, float(main_box_height / 2 + highlight_box_height), PI / 6, 2 * PI / 3, 40);
+        glPopMatrix();
+        
         // Draw DG
         glPushMatrix();
+        glTranslatef(dg_center_x,dg_center_y,0);
         glRotatef(dg_rot, 0, 0, 1);
+        glTranslatef(-dg_center_x,-dg_center_y,0);
         glColor3ub(DG_COLOR);
-        drawFilledCircle(dg_center_x, dg_center_y, dg_radius);
+        drawFilledCircle(dg_center_x,dg_center_y, dg_radius);
         glPopMatrix();
         
         // Draw Current Heading Box
@@ -589,13 +606,6 @@ int main (void)
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glDisableClientState(GL_VERTEX_ARRAY);
         
-        // Draw Turn Coordinator Arc
-        glPushMatrix();
-        glRotatef(turn_coordinator_rot, 0, 0, 1);
-        glColor3ub(WHITE);
-        DrawArc(center_x, horizon_origin, float(main_box_height / 2 + highlight_box_height), PI / 6, 2 * PI / 3, 40);
-        glPopMatrix();
-        
         // Swap Front and Back Buffers
         glfwSwapBuffers(window);
         
@@ -608,25 +618,25 @@ int main (void)
 
 void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT)
     {
         std::cout<<"Left Arrow"<<std::endl;
     }
-    if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+    if (key == GLFW_KEY_DOWN && action == GLFW_REPEAT)
     {
         horizon_blocks_y += 2;
     }
-    if (key == GLFW_KEY_UP && action == GLFW_PRESS)
+    if (key == GLFW_KEY_UP && action == GLFW_REPEAT)
     {
         horizon_blocks_y -= 2;
     }
-    if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    if (key == GLFW_KEY_LEFT && action == GLFW_REPEAT)
     {
         horizon_blocks_rot += 1;
         dg_rot += 1;
         turn_coordinator_rot += 1;
     }
-    if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    if (key == GLFW_KEY_RIGHT && action == GLFW_REPEAT)
     {
         horizon_blocks_rot -= 1;
         dg_rot -= 1;
