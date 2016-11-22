@@ -15,5 +15,4 @@
 #include "GLFW/glfw3.h"
 
 
-
 #endif   /* ----- #ifndef gl_lib_INC  ----- */

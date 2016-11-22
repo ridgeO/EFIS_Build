@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4B74BB031DCBAC3900081E7A /* libfreetype.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B74BB021DCBAC3900081E7A /* libfreetype.6.dylib */; };
 		4B82E9DB1DB9AA5400A64F3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B82E9DA1DB9AA5400A64F3C /* main.cpp */; };
 		4B82E9E21DB9AB4000A64F3C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B82E9E11DB9AB4000A64F3C /* OpenGL.framework */; };
 		4B82E9E41DB9AB5200A64F3C /* libglfw3.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B82E9E31DB9AB5200A64F3C /* libglfw3.3.2.dylib */; };
 		4B82E9E61DB9AB6200A64F3C /* libGLEW.2.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B82E9E51DB9AB6200A64F3C /* libGLEW.2.0.0.dylib */; };
 		4B88C7DB1DD24A7A00388C93 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B88C7DA1DD24A7A00388C93 /* AGL.framework */; };
+		4BD146EE1DDA1F8300CB623C /* libfreetype.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B74BB021DCBAC3900081E7A /* libfreetype.6.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +38,8 @@
 		4B82E9E81DB9AC2200A64F3C /* glfw_window.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = glfw_window.hpp; sourceTree = "<group>"; };
 		4B82E9E91DB9ADF900A64F3C /* gl_lib.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gl_lib.hpp; sourceTree = "<group>"; };
 		4B88C7DA1DD24A7A00388C93 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = System/Library/Frameworks/AGL.framework; sourceTree = SDKROOT; };
+		4B8CE3DF1DE4B95900DA2068 /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
+		4B8CE3E11DE4C05F00DA2068 /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = shaders; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +51,7 @@
 				4B88C7DB1DD24A7A00388C93 /* AGL.framework in Frameworks */,
 				4B82E9E61DB9AB6200A64F3C /* libGLEW.2.0.0.dylib in Frameworks */,
 				4B82E9E41DB9AB5200A64F3C /* libglfw3.3.2.dylib in Frameworks */,
-				4B74BB031DCBAC3900081E7A /* libfreetype.6.dylib in Frameworks */,
+				4BD146EE1DDA1F8300CB623C /* libfreetype.6.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,9 +91,11 @@
 			isa = PBXGroup;
 			children = (
 				4B82E9DA1DB9AA5400A64F3C /* main.cpp */,
+				4B8CE3DF1DE4B95900DA2068 /* shader.hpp */,
 				4B82E9E71DB9ABE800A64F3C /* glfw_app.hpp */,
 				4B82E9E81DB9AC2200A64F3C /* glfw_window.hpp */,
 				4B82E9E91DB9ADF900A64F3C /* gl_lib.hpp */,
+				4B8CE3E11DE4C05F00DA2068 /* shaders */,
 			);
 			path = EFIS_Build;
 			sourceTree = "<group>";
@@ -243,7 +247,11 @@
 		4B82E9DF1DB9AA5400A64F3C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = /usr/local/include/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/freetype/2.7/include/freetype2,
+					/usr/local/Cellar/glm/0.9.8.3/include/glm,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/glfw3/3.2.1/lib,
@@ -257,7 +265,11 @@
 		4B82E9E01DB9AA5400A64F3C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = /usr/local/include/;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/Cellar/freetype/2.7/include/freetype2,
+					/usr/local/Cellar/glm/0.9.8.3/include/glm,
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/glfw3/3.2.1/lib,
